@@ -39,5 +39,7 @@ jobs:
     - name: CPack
       working-directory: build
       run: |
+        echo "${{GITHUB_PATH}}"
+        dir ${{github.workspace}}/Qt/Tools/QtInstallerFramework/4.1/bin
         echo "${{github.workspace}}/Qt/Tools/QtInstallerFramework/4.1/bin" >> $GITHUB_PATH
         cpack -V
