@@ -52,10 +52,8 @@ jobs:
       run: |
         # dir
         # type CPackConfig.cmake
-        echo %PATH%
-        dir D:/a/simple_random_string_generator/Qt
-        dir D:/a/simple_random_string_generator/Qt/Tools
-        dir D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework
+        dir D:/a/simple_random_string_generator
+        echo {GITHUB_PATH}
         # echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
         # cpack -V
 
