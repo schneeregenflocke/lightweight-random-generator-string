@@ -50,9 +50,9 @@ jobs:
     - name: CPack
       working-directory: build
       run: |
-        dir
-        type CPackConfig.cmake
-        echo "{D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin}" >> $GITHUB_PATH
+        # dir
+        # type CPackConfig.cmake
+        echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
         cpack -V
 
       
