@@ -22,39 +22,24 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '6.1.2'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-        install-deps: 'true'
-        cached: 'false'
-        setup-python: 'true'
-        tools: 'tools_ifw,4.0.0,qt.tools.ifw.40'
-        set-env: 'true'
-        tools-only: 'false'
-        aqtversion: '==1.2.5'
-        py7zrversion: '==0.16.1'
-        extra: '--external 7z'
+      run: |
+        pip install aqtinstall==2.0.0rc3
+        aqt install-qt --outputdir ${{github.workspace}}/Qt windows desktop 6.1.2 win64_msvc2019_64
+        aqt install-tool --outputdir ${{github.workspace}}/Qt windows desktop tools_ifw qt.tools.ifw.41
 
-    #- name: Configure CMake
+    - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-    #  run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=D:/a/simple_random_string_generator/Qt/6.1.2/msvc2019_64 
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=${{github.workspace}}/Qt/6.1.2/msvc2019_64 
 
-    #- name: Build
+    - name: Build
       # Build your program with the given configuration
-    #  run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: CPack
-      #working-directory: build
+      working-directory: build
       run: |
-        # dir
-        # type CPackConfig.cmake
-        dir D:/a/simple_random_string_generator
-        echo {GITHUB_PATH}
-        # echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
-        # cpack -V
+        echo "${{github.workspace}}/Qt/Tools/QtInstallerFramework/4.1/bin" >> $GITHUB_PATH
+        cpack -V
 
       
