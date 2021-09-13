@@ -56,8 +56,10 @@ if(MSVC)
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${QT_INSTALLATION_PREFIX}/bin/qtenv2.bat 
-        COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+        #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+        #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
     )
 endif()
 
