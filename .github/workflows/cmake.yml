@@ -37,6 +37,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: CPack
+      shell: cmd
       working-directory: build
       run: |
         echo "$PATH"
