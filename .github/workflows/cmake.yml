@@ -52,7 +52,9 @@ jobs:
       run: |
         # dir
         # type CPackConfig.cmake
+        dir D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin
         echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
+        echo %PATH%
         cpack -V
 
       
