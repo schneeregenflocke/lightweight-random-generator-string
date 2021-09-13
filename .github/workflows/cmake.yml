@@ -38,23 +38,25 @@ jobs:
         py7zrversion: '==0.16.1'
         extra: '--external 7z'
 
-    - name: Configure CMake
+    #- name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=D:/a/simple_random_string_generator/Qt/6.1.2/msvc2019_64 
+    #  run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=D:/a/simple_random_string_generator/Qt/6.1.2/msvc2019_64 
 
-    - name: Build
+    #- name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    #  run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: CPack
-      working-directory: build
+      #working-directory: build
       run: |
         # dir
         # type CPackConfig.cmake
-        dir D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin
-        echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
         echo %PATH%
-        cpack -V
+        dir D:/a/simple_random_string_generator/Qt
+        dir D:/a/simple_random_string_generator/Qt/Tools
+        dir D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework
+        # echo "D:/a/simple_random_string_generator/Qt/Tools/QtInstallerFramework/4.0/bin" >> $GITHUB_PATH
+        # cpack -V
 
       
