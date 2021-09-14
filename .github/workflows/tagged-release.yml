@@ -36,13 +36,13 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Prepare CPack Directory
+    - name: Prepare Directory
       run: mkdir package
     
     - name: CPack
       working-directory: package
       run: |
-        cpack --config ../CPackConfig.cmake -V
+        cpack --config ../build/CPackConfig.cmake -V
 
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:

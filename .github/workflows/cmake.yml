@@ -42,11 +42,11 @@ jobs:
     - name: CPack
       working-directory: package
       run: |
-        dir ..\build
+        #dir ..\build
         cpack --config ../build/CPackConfig.cmake -V
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: installer
-        path: package/*.exe
+    #- name: Upload Artifact
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: installer
+    #    path: package/*.exe
