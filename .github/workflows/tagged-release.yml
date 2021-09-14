@@ -36,14 +36,17 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+    - name: Prepare CPack Directory
+      run: mkdir package
+    
     - name: CPack
-      working-directory: build
+      working-directory: package
       run: |
-        cpack -V
+        cpack --config ../CPackConfig.cmake -V
 
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          ${{ github.workspace }}/build/SimpleRandomStringGenerator*.exe
+          package/*.exe
