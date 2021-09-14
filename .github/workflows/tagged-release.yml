@@ -46,4 +46,4 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          ${{ github.workspace }}/build/SimpleRandomStringGenerator-*.exe
+          ${{ github.workspace }}/build/SimpleRandomStringGenerator*.exe
