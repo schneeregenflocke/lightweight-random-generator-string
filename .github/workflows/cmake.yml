@@ -41,3 +41,9 @@ jobs:
         mkdir package
         cd package
         cpack --config ../CPackConfig.cmake -V
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: installer
+        path: package/*.exe
