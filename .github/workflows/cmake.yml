@@ -42,11 +42,8 @@ jobs:
     - name: CPack
       working-directory: package
       run: |
-        dir ..
-        cpack --config ../CPackConfig.cmake -V
-        mkdir package2
-        cd package2
-        dir ..\..
+        dir ..\build
+        cpack --config ../build/CPackConfig.cmake -V
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
