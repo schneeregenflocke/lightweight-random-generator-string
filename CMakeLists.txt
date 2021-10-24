@@ -86,6 +86,7 @@ qt6_wrap_cpp(
     ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/main_window.h
     ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/checkable_spin_box_widget.h
     ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/random_string_configuration_widget.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/license_info_dialog.h
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_MOC})

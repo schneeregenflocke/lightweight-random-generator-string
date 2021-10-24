@@ -27,7 +27,7 @@ along with this program. If not, see < https://www.gnu.org/licenses/>.
 #include <QHBoxLayout>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QDialog>
+
 
 #include <QTextEdit>
 #include <QFile>
@@ -126,46 +126,4 @@ private:
     std::unique_ptr<QHBoxLayout> h_box_layout;
 	std::unique_ptr<QCheckBox> check_box;
 	std::unique_ptr<QSpinBox> spin_box;
-};
-
-
-class LicenseInfoDialog : public QDialog
-{
-public:
-	explicit LicenseInfoDialog(QWidget* parent = nullptr) :
-		QDialog(parent)
-	{
-		setWindowTitle(tr("Open Source License Info"));
-		setSizeGripEnabled(true);
-		setModal(false);
-		setMinimumSize(600, 400);
-
-		QResource res(":/gpl-3.0-standalone.html");
-		QByteArray byte_array(reinterpret_cast<const char*>(res.data()), res.size());
-		QString html_license(byte_array);
-		
-        license_text_edit = std::make_unique<QTextEdit>();
-		license_text_edit->setHtml(html_license);
-
-		
-		application_name_label = std::make_unique<QLabel>("SimpleRandomStringGenerator");
-		copyright_notice_label = std::make_unique<QLabel>(QString::fromWCharArray(L"Copyright \xa9 2021 Marco Peyer"));
-		application_name_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
-		copyright_notice_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
-
-
-        v_box_layout = std::make_unique<QVBoxLayout>();
-        setLayout(v_box_layout.get());
-
-        v_box_layout->addWidget(application_name_label.get());
-        v_box_layout->addWidget(copyright_notice_label.get());
-        v_box_layout->addWidget(license_text_edit.get());
-	}
-
-private:
-
-    std::unique_ptr<QVBoxLayout> v_box_layout;
-    std::unique_ptr<QTextEdit> license_text_edit;
-    std::unique_ptr<QLabel> application_name_label;
-    std::unique_ptr<QLabel> copyright_notice_label;
 };

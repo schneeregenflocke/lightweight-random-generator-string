@@ -21,6 +21,7 @@ along with this program. If not, see < https://www.gnu.org/licenses/>.
 
 
 #include "random_string_configuration_widget.h"
+#include "license_info_dialog.h"
 
 #include <QMainWindow>
 #include <QMenuBar>
