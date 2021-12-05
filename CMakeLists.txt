@@ -51,6 +51,11 @@ if(MSVC)
     set(QT_INSTALLATION_PREFIX CACHE PATH "Set your CMAKE_PREFIX_PATH environment variable to the Qt installation prefix (e.g. C:\\Qt\\6.0.0\\msvc2019_64)")
     list(APPEND CMAKE_PREFIX_PATH ${QT_INSTALLATION_PREFIX})
 
+    target_sources(
+        ${PROJECT_NAME} PRIVATE 
+        ${CMAKE_SOURCE_DIR}/src/win32_rc/SimpleRandomStringGenerator.rc
+    )
+
     target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:windows /ENTRY:mainCRTStartup)
 
     add_custom_command(
@@ -83,10 +88,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 
 qt6_wrap_cpp(
     ${PROJECT_NAME}_MOC
-    ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/main_window.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/checkable_spin_box_widget.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/random_string_configuration_widget.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/qt_moc/license_info_dialog.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/main_window.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/checkable_spin_box_widget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/random_string_configuration_widget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/license_info_dialog.h
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_MOC})
@@ -95,6 +100,8 @@ qt_add_resources(${PROJECT_NAME} "license_text"
     PREFIX "/"
     FILES gpl-3.0-standalone.html
 )
+
+
 
 install(
     TARGETS ${PROJECT_NAME}
@@ -107,7 +114,7 @@ set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_VENDOR "schneeregenflocke")
 set(CPACK_VERBATIM_VARIABLES true)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - Installation Tool")
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt)
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_VERSION_MAJOR ${${PROJECT_NAME}_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${${PROJECT_NAME}_VERSION_MINOR})
 set(CPACK_PACKAGE_HOMEPAGE_URL https://github.com/schneeregenflocke)
@@ -144,8 +151,8 @@ if(MSVC)
         ${PROJECT_NAME}_component
         #NAME ${PROJECT_NAME}_component
         VERSION ${PROJECT_VERSION}
-        LICENSES "License" ${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt
-        SCRIPT "${CMAKE_CURRENT_LIST_DIR}/installer/component.qs"
+        LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+        SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/installer/component.qs"
     )
 endif()
 
