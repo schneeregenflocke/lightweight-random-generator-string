@@ -13,14 +13,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see < https://www.gnu.org/licenses/>.
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 
 #pragma once
 
-
-#include "../random_string_generator.h"
+#include "../random_string_configuration.h"
+//#include "../random_string_generator.h"
 #include "checkable_spin_box_widget.h"
 
 #include <QWidget>
@@ -95,18 +95,21 @@ public:
 
     RandomStringConfiguration GetRandomStringConfiguration() const
     {
-        RandomStringConfiguration password_configuration;
-        password_configuration.password_lenght = password_lenght_widget->value();
+        RandomStringConfiguration configuration(password_lenght_widget->value(), GetCharacterConfigurations());
+        return configuration;
+    }
 
+    std::vector<CharacterConfiguration> GetCharacterConfigurations() const
+    {
         const auto checked_state_indices = GetCheckedStateIndices();
+        std::vector<CharacterConfiguration> configurations;
         for (const auto& checked_state_index : checked_state_indices)
         {
-            RandomStringConfiguration::CharacterConfiguration character_configuration;
-            character_configuration.type = checked_state_index;
-            character_configuration.number = character_configuration_widgets[checked_state_index]->Value();
-            password_configuration.character_configuration.push_back(character_configuration);
+            CharacterConfiguration::CharacterType type = static_cast<CharacterConfiguration::CharacterType>(checked_state_index);
+            CharacterConfiguration character_configuration(type, character_configuration_widgets[checked_state_index]->Value());
+            configurations.push_back(character_configuration);
         }
-        return password_configuration;
+        return configurations;
     }
 
 private slots:
@@ -170,9 +173,9 @@ private:
         return exceeding_size;
     }
 
-    std::vector<size_t> GetCheckedStateIndices() const
+    std::vector<int> GetCheckedStateIndices() const
     {
-        std::vector<size_t> checked_state_indices;
+        std::vector<int> checked_state_indices;
         for (size_t index = 0; index < character_configuration_widgets.size(); ++index)
         {
             if (character_configuration_widgets[index]->CheckState() == Qt::CheckState::Checked)

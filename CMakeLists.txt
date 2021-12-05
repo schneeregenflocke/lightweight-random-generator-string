@@ -45,6 +45,7 @@ target_sources(
     ${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/src/main.cpp
     ${CMAKE_SOURCE_DIR}/src/random_string_generator.h
+    ${CMAKE_SOURCE_DIR}/src/random_string_configuration.h
 )
 
 if(MSVC)

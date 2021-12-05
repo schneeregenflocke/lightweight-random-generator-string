@@ -13,14 +13,18 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see < https://www.gnu.org/licenses/>.
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
 
+#include "random_string_configuration.h"
+
 #include <array>
 #include <vector>
+#include <list>
+#include <iterator>
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -30,27 +34,7 @@ along with this program. If not, see < https://www.gnu.org/licenses/>.
 
 
 
-struct RandomStringConfiguration
-{
-public:
 
-    struct CharacterConfiguration
-    {
-        int type;
-        int number;
-    };
-
-    std::vector<CharacterConfiguration> character_configuration;
-    int password_lenght;
-
-    enum
-    {
-        uppercase,
-        lowercase,
-        digit,
-        special_character
-    };
-};
 
 
 class RandomStringGenerator
@@ -62,20 +46,28 @@ public:
         InitializeSpecialCharacters();
     }
 
-    std::vector<size_t> RandomIndices(size_t number) const
+    std::vector<size_t> GenerateRandomIndices(size_t number) const
     {
-        std::vector<size_t> non_taken_indices(number);
-        for (size_t index = 0; index < non_taken_indices.size(); ++index)
+        //fill vector with numbers equal to their index
+        std::vector<size_t> unused_indices;
+        for (size_t index = 0; index < number; ++index)
         {
-            non_taken_indices[index] = index;
+            unused_indices.push_back(index);
         }
 
         std::vector<size_t> random_indices(number);
         for (size_t index = 0; index < random_indices.size(); ++index)
         {
-            const auto random_index = RandomIntegerNumber(0, (non_taken_indices.size() - 1));
-            random_indices[non_taken_indices[random_index]] = index;
-            non_taken_indices.erase(non_taken_indices.begin() + random_index);
+            //generate a random number not larger than the size of the vector with the unused indexes
+            const auto random_index = RandomIntegerNumber(0, (unused_indices.size() - 1));
+            
+            const auto unused_index = unused_indices[random_index];
+            random_indices[unused_index] = index;
+            
+            //delete the index now used from the vector of unused indices
+            auto iterator = unused_indices.begin();
+            std::advance(iterator, random_index);
+            unused_indices.erase(iterator);
         }
 
         return random_indices;
@@ -83,74 +75,33 @@ public:
 
     std::string GeneratePasswordString(const RandomStringConfiguration& password_configuration) const
     {
-        const auto random_indices = RandomIndices(password_configuration.password_lenght);
+        const auto random_indices = GenerateRandomIndices(password_configuration.StringLenght());
         
-        std::string password_string;
-        password_string.resize(password_configuration.password_lenght);
+        std::string random_string;
+        random_string.resize(password_configuration.StringLenght());
 
-        size_t password_string_position = 0;
-        for (size_t index = 0; index < password_configuration.character_configuration.size(); ++index)
+        size_t random_indices_position = 0;
+        for (size_t index = 0; index < password_configuration.NumberCharacterTypes(); ++index)
         {
-            for (size_t counter = 0; counter < password_configuration.character_configuration[index].number; ++counter)
+            for (size_t subindex = 0; subindex < password_configuration.GetCharacterConfiguration(index).Number(); ++subindex)
             {
-                if (password_configuration.character_configuration[index].type == RandomStringConfiguration::uppercase)
-                {
-                    password_string[random_indices[password_string_position]] = GetRandomUppercaseLetter();
-                    ++password_string_position;
-                }
-
-                if (password_configuration.character_configuration[index].type == RandomStringConfiguration::lowercase)
-                {
-                    password_string[random_indices[password_string_position]] = GetRandomLowercaseLetter();
-                    ++password_string_position;
-                }
-
-                if (password_configuration.character_configuration[index].type == RandomStringConfiguration::digit)
-                {
-                    password_string[random_indices[password_string_position]] = GetRandomDigit();
-                    ++password_string_position;
-                }
-
-                if (password_configuration.character_configuration[index].type == RandomStringConfiguration::special_character)
-                {
-                    password_string[random_indices[password_string_position]] = GetRandomSpecialCharacter();
-                    ++password_string_position;
-                }
+                const auto string_position = random_indices[random_indices_position];
+                random_string[string_position] = GetRandomLetter(password_configuration.GetCharacterConfiguration(index).Type());
+                ++random_indices_position; 
             }
         }
 
-        size_t remaining_password_lenght = password_configuration.password_lenght - password_string_position;
+        size_t remaining_password_lenght = password_configuration.StringLenght() - random_indices_position;
 
         for (size_t index = 0; index < remaining_password_lenght; ++index)
         {
-            auto random_select = RandomIntegerNumber(0, password_configuration.character_configuration.size() - 1);
-
-            if (password_configuration.character_configuration[random_select].type == RandomStringConfiguration::uppercase)
-            {
-                password_string[random_indices[password_string_position]] = GetRandomUppercaseLetter();
-                ++password_string_position;
-            }
-
-            if (password_configuration.character_configuration[random_select].type == RandomStringConfiguration::lowercase)
-            {
-                password_string[random_indices[password_string_position]] = GetRandomLowercaseLetter();
-                ++password_string_position;
-            }
-
-            if (password_configuration.character_configuration[random_select].type == RandomStringConfiguration::digit)
-            {
-                password_string[random_indices[password_string_position]] = GetRandomDigit();
-                ++password_string_position;
-            }
-
-            if (password_configuration.character_configuration[random_select].type == RandomStringConfiguration::special_character)
-            {
-                password_string[random_indices[password_string_position]] = GetRandomSpecialCharacter();
-                ++password_string_position;
-            }
+            const auto random_select = RandomIntegerNumber(0, password_configuration.NumberCharacterTypes() - 1);
+            const auto string_position = random_indices[random_indices_position];
+            random_string[string_position] = GetRandomLetter(password_configuration.GetCharacterConfiguration(random_select).Type());
+            ++random_indices_position;
         }
 
-        return password_string;
+        return random_string;
     }
 
 private:
@@ -163,24 +114,31 @@ private:
         return random_number;
     }
 
-    char GetRandomUppercaseLetter() const
+    char GetRandomLetter(CharacterConfiguration::CharacterType type) const
     {
-        return static_cast<char>(RandomIntegerNumber(65, 90));
-    }
+        char random_letter = 0;
 
-    char GetRandomLowercaseLetter() const
-    {
-        return static_cast<char>(RandomIntegerNumber(97, 122));
-    }
+        if (type == CharacterConfiguration::CharacterType::uppercase)
+        {
+            random_letter = static_cast<char>(RandomIntegerNumber(65, 90));
+        }
 
-    char GetRandomDigit() const
-    {
-        return static_cast<char>(RandomIntegerNumber(48, 57));
-    }
+        if (type == CharacterConfiguration::CharacterType::lowercase)
+        {
+            random_letter = static_cast<char>(RandomIntegerNumber(97, 122));
+        }
 
-    char GetRandomSpecialCharacter() const
-    {
-        return static_cast<char>(special_characters[RandomIntegerNumber(0, special_characters.size() - 1)]);
+        if (type == CharacterConfiguration::CharacterType::digit)
+        {
+            random_letter = static_cast<char>(RandomIntegerNumber(48, 57));
+        }
+
+        if (type == CharacterConfiguration::CharacterType::special_character)
+        {
+            random_letter = static_cast<char>(special_characters[RandomIntegerNumber(0, special_characters.size() - 1)]);
+        }
+
+        return random_letter;
     }
 
     void InitializeSpecialCharacters()
