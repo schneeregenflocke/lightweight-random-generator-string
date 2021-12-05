@@ -30,6 +30,7 @@ int main(int argc, char** argv)
 {
 	//QLocale::system().name();
 
+	//see https://doc.qt.io/qt-5/highdpi.html
 	//auto high_dpi_policy = QApplication::highDpiScaleFactorRoundingPolicy();
 	QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
 
