@@ -36,6 +36,8 @@ int main(int argc, char** argv)
 
 	QApplication app(argc, argv);
 
+	app.setWindowIcon(QIcon(QPixmap(":/images/SRSG_icon.svg")));
+
 	MainWindow main_window;
 	main_window.show();
 

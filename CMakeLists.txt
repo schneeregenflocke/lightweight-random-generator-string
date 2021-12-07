@@ -64,8 +64,8 @@ if(MSVC)
         COMMAND ${QT_INSTALLATION_PREFIX}/bin/qtenv2.bat 
         #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
         #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
-        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
     )
 endif()
 
@@ -97,9 +97,11 @@ qt6_wrap_cpp(
 
 target_sources(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_MOC})
 
-qt_add_resources(${PROJECT_NAME} "license_text"
+qt_add_resources(
+    ${PROJECT_NAME} 
+    "license_text"
     PREFIX "/"
-    FILES gpl-3.0-standalone.html
+    FILES gpl-3.0-standalone.html images/SRSG_icon.svg
 )
 
 
