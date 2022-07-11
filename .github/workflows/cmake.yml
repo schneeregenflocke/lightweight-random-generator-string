@@ -25,12 +25,12 @@ jobs:
       run: |
         pip install aqtinstall==2.0.0rc3
         aqt install-qt --outputdir ${{github.workspace}}/Qt windows desktop 6.1.2 win64_msvc2019_64
-        aqt install-tool --outputdir ${{github.workspace}}/Qt windows desktop tools_ifw qt.tools.ifw.42
+        aqt install-tool --outputdir ${{github.workspace}}/Qt windows desktop tools_ifw qt.tools.ifw.44
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=${{github.workspace}}/Qt/6.1.2/msvc2019_64 -DCPACK_IFW_ROOT=${{github.workspace}}/Qt/Tools/QtInstallerFramework/4.2
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQT_INSTALLATION_PREFIX=${{github.workspace}}/Qt/6.1.2/msvc2019_64 -DCPACK_IFW_ROOT=${{github.workspace}}/Qt/Tools/QtInstallerFramework/4.4
 
     - name: Build
       # Build your program with the given configuration
