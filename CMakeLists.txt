@@ -101,7 +101,7 @@ qt_add_resources(
     ${PROJECT_NAME} 
     "license_text"
     PREFIX "/"
-    FILES gpl-3.0-standalone.html images/SRSG_icon.svg
+    FILES LICENSE.txt images/SRSG_icon.svg
 )
 
 

@@ -45,16 +45,16 @@ public:
 		setModal(false);
 		setMinimumSize(600, 400);
 
-		QResource res(":/gpl-3.0-standalone.html");
+		QResource res(":/LICENSE.txt");
 		QByteArray byte_array(reinterpret_cast<const char*>(res.data()), res.size());
-		QString html_license(byte_array);
+		QString license_text(byte_array);
 
 		license_text_edit = std::make_unique<QTextEdit>();
-		license_text_edit->setHtml(html_license);
+		license_text_edit->setText(license_text);
 
 
 		application_name_label = std::make_unique<QLabel>("SimpleRandomStringGenerator");
-		copyright_notice_label = std::make_unique<QLabel>(QString::fromWCharArray(L"Copyright \xa9 2021 Marco Peyer"));
+		copyright_notice_label = std::make_unique<QLabel>(QString::fromWCharArray(L"Copyright \xa9 2021 - 2022 Marco Peyer"));
 		application_name_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
 		copyright_notice_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
 

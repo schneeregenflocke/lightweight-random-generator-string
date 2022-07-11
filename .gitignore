@@ -15,4 +15,4 @@ _deps
 CMakeSettings.json
 /build
 /.cache
-src/win32_rc/RCa15232
+src/win32_rc/RCa*
