@@ -2,17 +2,21 @@ cmake_minimum_required(VERSION 3.16)
 
 include(CMakePrintHelpers)
 
-file(STRINGS "VERSION" versionFile)
+#file(STRINGS "VERSION" versionFile)
 #string(REGEX MATCHALL "([0-9]+)" versionList ${versionFile})
 #list(GET versionList 0 ${PROJECT_NAME}_VERSION_MAJOR)
 #list(GET versionList 1 ${PROJECT_NAME}_VERSION_MINOR)
 #list(GET versionList 2 ${PROJECT_NAME}_VERSION_PATCH)
 #set(${PROJECT_NAME}_VERSION_TWEAK)
 
-project(SimpleRandomStringGenerator VERSION ${versionFile})
+#project(SimpleRandomStringGenerator VERSION ${versionFile})
+project(SimpleRandomStringGenerator)
 
-cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK PROJECT_VERSION)
+#cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK PROJECT_VERSION)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Generate compile_commands.json for clang tooling" FORCE)
+
+set(Qt6_ROOT "$ENV{Qt6_ROOT}" CACHE PATH "Path to your Qt installation prefix" FORCE)
 
 cmake_print_variables(
     CMAKE_SYSTEM_NAME
@@ -33,7 +37,16 @@ cmake_print_variables(
     CMAKE_CFG_INTDIR
 )
 
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
+qt_standard_project_setup()
+
+cmake_print_variables(
+    Qt6_ROOT
+    Qt6_FOUND
+    Qt6_VERSION
+    WINDEPLOYQT_EXECUTABLE
+    CMAKE_PREFIX_PATH
+)
 
 add_executable(${PROJECT_NAME})
 
@@ -43,17 +56,21 @@ cmake_print_variables(${PROJECT_NAME}_TARGET_CXX_STANDARD)
 
 target_sources(
     ${PROJECT_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/main.cpp
-    ${CMAKE_SOURCE_DIR}/src/random_string_generator.h
-    ${CMAKE_SOURCE_DIR}/src/random_string_configuration.h
+    src/main.cpp
+    src/random_string_generator.h
+    src/random_string_configuration.h
+    src/main_window.h
+    src/checkable_spin_box_widget.h
+    src/random_string_configuration_widget.h
+    src/license_info_dialog.h
 )
 
 if(MSVC)
-    set(QT_INSTALLATION_PREFIX CACHE PATH "Set your CMAKE_PREFIX_PATH environment variable to the Qt installation prefix (e.g. C:\\Qt\\6.0.0\\msvc2019_64)")
-    list(APPEND CMAKE_PREFIX_PATH ${QT_INSTALLATION_PREFIX})
+    #set(QT_INSTALLATION_PREFIX CACHE PATH "Set your CMAKE_PREFIX_PATH environment variable to the Qt installation prefix (e.g. C:\\Qt\\6.0.0\\msvc2019_64)")
+    #list(APPEND CMAKE_PREFIX_PATH ${QT_INSTALLATION_PREFIX})
 
     target_sources(
-        ${PROJECT_NAME} PRIVATE 
+        ${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/src/win32_rc/SimpleRandomStringGenerator.rc
     )
 
@@ -61,50 +78,22 @@ if(MSVC)
 
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${QT_INSTALLATION_PREFIX}/bin/qtenv2.bat 
-        #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        #COMMAND ${QT_INSTALLATION_PREFIX}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
-        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        COMMAND windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+        COMMAND ${Qt6_ROOT}/bin/qtenv2.bat
+        #COMMAND ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+        #COMMAND ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+        COMMAND ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+        COMMAND ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
     )
 endif()
 
-
-find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
-
-cmake_print_variables(
-    CMAKE_PREFIX_PATH
-    QT_INSTALLATION_PREFIX
-    Qt6Widgets_COMPILE_DEFINITIONS
-    Qt6Widgets_DEFINITIONS
-    Qt6Widgets_EXECUTABLE_COMPILE_FLAGS
-    Qt6Widgets_FOUND
-    Qt6Widgets_INCLUDE_DIRS
-    Qt6Widgets_LIBRARIES
-    Qt6Widgets_PRIVATE_INCLUDE_DIRS
-    Qt6Widgets_VERSION_STRING
-)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 
-qt6_wrap_cpp(
-    ${PROJECT_NAME}_MOC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/main_window.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/checkable_spin_box_widget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/random_string_configuration_widget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/qt_moc/license_info_dialog.h
-)
-
-target_sources(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_MOC})
-
 qt_add_resources(
-    ${PROJECT_NAME} 
+    ${PROJECT_NAME}
     "license_text"
     PREFIX "/"
     FILES LICENSE.txt images/SRSG_icon.svg
 )
-
-
 
 install(
     TARGETS ${PROJECT_NAME}
@@ -129,7 +118,6 @@ set(CPACK_IFW_PRODUCT_URL ${CPACK_PACKAGE_HOMEPAGE_URL})
 set(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
 set(CPACK_IFW_PACKAGE_WIZARD_SHOW_PAGE_LIST OFF)
 set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/${PROJECT_NAME}")
-
 
 set(CPACK_GENERATOR IFW)
 

@@ -1,87 +1,44 @@
-/*
-SimpleRandomStringGenerator
-Copyright (c) 2021 Marco Peyer
+#ifndef RANDOM_STRING_CONFIGURATION_H
+#define RANDOM_STRING_CONFIGURATION_H
 
-This program is free software: you can redistribute it and /or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
-
-#pragma once
-
-
+#include <cstdint>
 #include <vector>
 
-
-class CharacterConfiguration
-{
+class CharacterConfiguration {
 public:
+  enum CharacterType : std::uint8_t { uppercase, lowercase, digit, special_character };
 
-    enum CharacterType : int
-    {
-        uppercase,
-        lowercase,
-        digit,
-        special_character
-    };
+  CharacterConfiguration(CharacterType type, int number) : type(type), number(number) {}
 
-    CharacterConfiguration(CharacterType type, int number) :
-        type(type),
-        number(number)
-    {}
+  [[nodiscard]] CharacterType Type() const { return type; }
 
-    CharacterType Type() const
-    {
-        return type;
-    }
-
-    int Number() const
-    {
-        return number;
-    }
+  [[nodiscard]] int Number() const { return number; }
 
 private:
-
-    CharacterType type;
-    int number;
+  CharacterType type;
+  int number;
 };
 
-
-class RandomStringConfiguration
-{
+class RandomStringConfiguration {
 public:
+  RandomStringConfiguration(int string_lenght,
+                            const std::vector<CharacterConfiguration> &character_configurations)
+      : string_lenght(string_lenght), character_configurations(character_configurations)
+  {
+  }
 
-    RandomStringConfiguration(int string_lenght, const std::vector<CharacterConfiguration>& character_configurations) :
-        string_lenght(string_lenght),
-        character_configurations(character_configurations)
-    {}
+  [[nodiscard]] int StringLenght() const { return string_lenght; }
 
-    int StringLenght() const
-    {
-        return string_lenght;
-    }
+  [[nodiscard]] size_t NumberCharacterTypes() const { return character_configurations.size(); }
 
-    size_t NumberCharacterTypes() const
-    {
-        return character_configurations.size();
-    }
-
-    CharacterConfiguration GetCharacterConfiguration(size_t index) const
-    {
-        return character_configurations[index];
-    }
+  [[nodiscard]] CharacterConfiguration GetCharacterConfiguration(size_t index) const
+  {
+    return character_configurations[index];
+  }
 
 private:
-
-    int string_lenght;
-    std::vector<CharacterConfiguration> character_configurations;
+  int string_lenght;
+  std::vector<CharacterConfiguration> character_configurations;
 };
+
+#endif // RANDOM_STRING_CONFIGURATION_H

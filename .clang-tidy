@@ -1,0 +1,35 @@
+---
+Checks:
+  - clang-diagnostic-*
+  - clang-analyzer-*
+  - bugprone-*
+  - cert-*
+  - concurrency-*
+  - cppcoreguidelines-*
+  - google-*
+  - hicpp-*
+  - llvm-*
+  - misc-*
+  - modernize-*
+  - -modernize-use-trailing-return-type
+  - performance-*
+  - portability-*
+  - readability-*
+WarningsAsErrors: ""
+HeaderFileExtensions:
+  - h
+  - hh
+  - hpp
+  - hxx
+ImplementationFileExtensions:
+  - c
+  - cc
+  - cpp
+  - cxx
+HeaderFilterRegex: ""
+ExcludeHeaderFilterRegex: ""
+FormatStyle: file
+User: schneeregenflocke
+SystemHeaders: false
+---
+
