@@ -29,6 +29,8 @@ jobs:
 
       - name: Install Qt
         working-directory: ${{ github.workspace }}
+        env: 
+          QT_INSTALLER_JWT_TOKEN: ${{ secrets.QT_INSTALLER_JWT_TOKEN }}
         run: |
           dir
           curl -L -O https://download.qt.io/official_releases/online_installers/qt-online-installer-windows-x64-online.exe
