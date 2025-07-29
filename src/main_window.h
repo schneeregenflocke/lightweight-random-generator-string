@@ -17,8 +17,7 @@ class MainWindow : public QMainWindow {
 
 public:
   explicit MainWindow(QWidget *parent = nullptr)
-      : QMainWindow(parent),
-        password_configuration_widget(new RandomStringConfigurationWidget(this)),
+      : QMainWindow(parent), password_configuration_widget(new ConfigurationWidget(this)),
         password_text_edit(new QTextEdit(this)), license_info_dialog(new LicenseInfoDialog(this))
   {
     constexpr int min_window_width = 400;
@@ -72,7 +71,7 @@ private: // NOLINT(readability-redundant-access-specifiers)
   }
 
   QPointer<QTextEdit> password_text_edit;
-  QPointer<RandomStringConfigurationWidget> password_configuration_widget;
+  QPointer<ConfigurationWidget> password_configuration_widget;
   std::unique_ptr<RandomStringGenerator> password_generator;
   QPointer<LicenseInfoDialog> license_info_dialog;
 };

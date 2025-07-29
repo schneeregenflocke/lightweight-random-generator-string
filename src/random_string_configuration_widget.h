@@ -10,11 +10,11 @@
 #include <cstddef>
 #include <qpointer.h>
 
-class RandomStringConfigurationWidget : public QWidget {
+class ConfigurationWidget : public QWidget {
   Q_OBJECT
 
 public:
-  explicit RandomStringConfigurationWidget(QWidget *parent)
+  explicit ConfigurationWidget(QWidget *parent)
       : QWidget(parent), password_lenght_widget(new QSpinBox(this)),
         character_configuration_widgets{nullptr, nullptr, nullptr, nullptr}
   {
@@ -30,7 +30,7 @@ public:
     vbox_layout->addWidget(password_lenght_label);
 
     connect(password_lenght_widget, &QSpinBox::valueChanged, this,
-            &RandomStringConfigurationWidget::UpdatePasswordConfiguration);
+            &ConfigurationWidget::UpdatePasswordConfiguration);
 
     for (auto &character_configuration_widget : character_configuration_widgets) {
       QPointer<CheckableSpinBox> temp_pointer = new CheckableSpinBox(this);
@@ -55,7 +55,7 @@ public:
 
     for (auto &character_configuration_widget : character_configuration_widgets) {
       connect(character_configuration_widget.get(), &CheckableSpinBox::OptionalSpinBoxChanged, this,
-              &RandomStringConfigurationWidget::UpdatePasswordConfiguration);
+              &ConfigurationWidget::UpdatePasswordConfiguration);
     }
   }
 
