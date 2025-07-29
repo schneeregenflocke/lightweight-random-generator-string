@@ -20,11 +20,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Print environment details
+        run: |
+          echo "Workspace: ${{ github.workspace }}"
+          echo "Qt6_ROOT: ${{ env.Qt6_ROOT }}"
+
+      - uses: actions/checkout@v4
 
       - name: Install Qt
         working-directory: ${{ github.workspace }}
         run: |
+          cd
+          dir
           curl -L -O https://download.qt.io/official_releases/online_installers/qt-online-installer-windows-x64-online.exe
           qt-online-installer-windows-x64-online.exe --root ${{ github.workspace }}/Qt --accept-licenses --accept-obligations --default-answer --confirm-command install qt6.9.1-msvc2022-full-dbg
 
