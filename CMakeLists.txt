@@ -14,6 +14,10 @@ project(lightweight-random-string-generator)
 
 #cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK PROJECT_VERSION)
 
+# set(CMAKE_CXX_STANDARD 20)
+# set(CMAKE_CXX_STANDARD_REQUIRED True)
+cmake_print_variables(CMAKE_CXX_STANDARD, CMAKE_CXX_STANDARD_REQUIRED)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Generate compile_commands.json for clang tooling" FORCE)
 
 set(Qt6_ROOT "$ENV{Qt6_ROOT}" CACHE PATH "Path to your Qt installation prefix" FORCE)
@@ -46,13 +50,26 @@ cmake_print_variables(
     Qt6_VERSION
     WINDEPLOYQT_EXECUTABLE
     CMAKE_PREFIX_PATH
+    Qt6Widgets_COMPILE_DEFINITIONS
+    Qt6Widgets_DEFINITIONS
+    Qt6Widgets_EXECUTABLE_COMPILE_FLAGS
+    Qt6Widgets_FOUND
+    Qt6Widgets_INCLUDE_DIRS
+    Qt6Widgets_LIBRARIES
+    Qt6Widgets_PRIVATE_INCLUDE_DIRS
+    Qt6Widgets_VERSION
 )
 
 add_executable(${PROJECT_NAME})
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-get_target_property(${PROJECT_NAME}_TARGET_CXX_STANDARD ${PROJECT_NAME} CXX_STANDARD)
-cmake_print_variables(${PROJECT_NAME}_TARGET_CXX_STANDARD)
+# cmake_print_properties(
+#     TARGETS ${PROJECT_NAME}
+#     PROPERTIES CXX_STANDARD
+# )
+
+# target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+# get_target_property(${PROJECT_NAME}_TARGET_CXX_STANDARD ${PROJECT_NAME} CXX_STANDARD)
+# cmake_print_variables(${PROJECT_NAME}_TARGET_CXX_STANDARD)
 
 target_sources(
     ${PROJECT_NAME} PRIVATE
@@ -102,51 +119,51 @@ install(
     COMPONENT ${PROJECT_NAME}_component
 )
 
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-set(CPACK_PACKAGE_VENDOR "schneeregenflocke")
-set(CPACK_VERBATIM_VARIABLES true)
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - Installation Tool")
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
-set(CPACK_PACKAGE_VERSION_MAJOR ${${PROJECT_NAME}_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${${PROJECT_NAME}_VERSION_MINOR})
-set(CPACK_PACKAGE_HOMEPAGE_URL https://github.com/schneeregenflocke)
+# set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+# set(CPACK_PACKAGE_VENDOR "schneeregenflocke")
+# set(CPACK_VERBATIM_VARIABLES true)
+# set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - Installation Tool")
+# set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
+# set(CPACK_PACKAGE_VERSION_MAJOR ${${PROJECT_NAME}_VERSION_MAJOR})
+# set(CPACK_PACKAGE_VERSION_MINOR ${${PROJECT_NAME}_VERSION_MINOR})
+# set(CPACK_PACKAGE_HOMEPAGE_URL https://github.com/schneeregenflocke)
 
-set(CPACK_IFW_VERBOSE ON)
-set(CPACK_IFW_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
-set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY ${PROJECT_NAME})
-set(CPACK_IFW_PRODUCT_URL ${CPACK_PACKAGE_HOMEPAGE_URL})
-set(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
-set(CPACK_IFW_PACKAGE_WIZARD_SHOW_PAGE_LIST OFF)
-set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/${PROJECT_NAME}")
+# set(CPACK_IFW_VERBOSE ON)
+# set(CPACK_IFW_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
+# set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY ${PROJECT_NAME})
+# set(CPACK_IFW_PRODUCT_URL ${CPACK_PACKAGE_HOMEPAGE_URL})
+# set(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
+# set(CPACK_IFW_PACKAGE_WIZARD_SHOW_PAGE_LIST OFF)
+# set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/${PROJECT_NAME}")
 
-set(CPACK_GENERATOR IFW)
+# set(CPACK_GENERATOR IFW)
 
-include(CPack REQUIRED)
-include(CPackIFW REQUIRED)
+#include(CPack REQUIRED)
+#include(CPackIFW REQUIRED)
 
-cpack_add_component(
-    ${PROJECT_NAME}_component
-    DISPLAY_NAME ${PROJECT_NAME}
-    DESCRIPTION "Generates random strings with simple configuration options."
-    REQUIRED
-)
+# cpack_add_component(
+#     ${PROJECT_NAME}_component
+#     DISPLAY_NAME ${PROJECT_NAME}
+#     DESCRIPTION "Generates random strings with simple configuration options."
+#     REQUIRED
+# )
 
-if(MSVC)
-    install(
-        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff/
-        DESTINATION ${PROJECT_NAME}
-        COMPONENT ${PROJECT_NAME}_component
-    )
+# if(MSVC)
+#     install(
+#         DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff/
+#         DESTINATION ${PROJECT_NAME}
+#         COMPONENT ${PROJECT_NAME}_component
+#     )
 
-    cpack_ifw_configure_component(
-        ${PROJECT_NAME}_component
-        #NAME ${PROJECT_NAME}_component
-        VERSION ${PROJECT_VERSION}
-        LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
-        SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/installer/component.qs"
-    )
-endif()
+#     cpack_ifw_configure_component(
+#         ${PROJECT_NAME}_component
+#         #NAME ${PROJECT_NAME}_component
+#         VERSION ${PROJECT_VERSION}
+#         LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+#         SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/installer/component.qs"
+#     )
+# endif()
 
-get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
-#list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified" "headers")
-cmake_print_variables(CPACK_COMPONENTS_ALL)
+# get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
+# #list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified" "headers")
+# cmake_print_variables(CPACK_COMPONENTS_ALL)
