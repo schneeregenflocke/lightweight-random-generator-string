@@ -1,6 +1,7 @@
-#ifndef RANDOM_STRING_CONFIGURATION_H
-#define RANDOM_STRING_CONFIGURATION_H
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -8,26 +9,26 @@ class CharacterConfiguration {
 public:
   enum CharacterType : std::uint8_t { uppercase, lowercase, digit, special_character };
 
-  CharacterConfiguration(CharacterType type, int number) : type(type), number(number) {}
+  CharacterConfiguration(CharacterType type, size_t number) : type(type), number(number) {}
 
   [[nodiscard]] CharacterType Type() const { return type; }
 
-  [[nodiscard]] int Number() const { return number; }
+  [[nodiscard]] size_t Number() const { return number; }
 
 private:
   CharacterType type;
-  int number;
+  size_t number;
 };
 
-class RandomStringConfiguration {
+class StringConfiguration {
 public:
-  RandomStringConfiguration(int string_lenght,
-                            const std::vector<CharacterConfiguration> &character_configurations)
+  StringConfiguration(size_t string_lenght,
+                      const std::vector<CharacterConfiguration> &character_configurations)
       : string_lenght(string_lenght), character_configurations(character_configurations)
   {
   }
 
-  [[nodiscard]] int StringLenght() const { return string_lenght; }
+  [[nodiscard]] size_t StringLenght() const { return string_lenght; }
 
   [[nodiscard]] size_t NumberCharacterTypes() const { return character_configurations.size(); }
 
@@ -37,8 +38,8 @@ public:
   }
 
 private:
-  int string_lenght;
+  size_t string_lenght;
   std::vector<CharacterConfiguration> character_configurations;
 };
 
-#endif // RANDOM_STRING_CONFIGURATION_H
+#endif // CONFIGURATION_H

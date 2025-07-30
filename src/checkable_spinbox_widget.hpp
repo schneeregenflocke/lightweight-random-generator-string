@@ -1,5 +1,5 @@
-#ifndef CHECKABLE_SPIN_BOX_WIDGET_H
-#define CHECKABLE_SPIN_BOX_WIDGET_H
+#ifndef CHECKABLE_SPINBOX_WIDGET_H
+#define CHECKABLE_SPINBOX_WIDGET_H
 
 #include <QCheckBox>
 #include <QFile>
@@ -74,4 +74,4 @@ private: // NOLINT(readability-redundant-access-specifiers)
   QPointer<QSpinBox> spin_box;
 };
 
-#endif // CHECKABLE_SPIN_BOX_WIDGET_H
+#endif // CHECKABLE_SPINBOX_WIDGET_H

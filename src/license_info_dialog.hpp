@@ -36,9 +36,10 @@ public:
     license_text_edit->setText(license_text);
     vbox_layout->addWidget(license_text_edit);
 
-    QPointer<QLabel> application_name_label = new QLabel("SimpleRandomStringGenerator", this);
+    QPointer<QLabel> application_name_label =
+        new QLabel("lightweight-random-string-generator", this);
     QPointer<QLabel> copyright_notice_label =
-        new QLabel(QString::fromWCharArray(L"Copyright \xa9 2021 - 2022 Marco Peyer"));
+        new QLabel(QString::fromWCharArray(L"Copyright \xa9 2021 - 2025 Marco Peyer"));
     application_name_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     copyright_notice_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     vbox_layout->addWidget(application_name_label);

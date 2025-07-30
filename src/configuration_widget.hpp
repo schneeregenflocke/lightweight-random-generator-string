@@ -1,8 +1,8 @@
-#ifndef RANDOM_STRING_CONFIGURATION_WIDGET_H
-#define RANDOM_STRING_CONFIGURATION_WIDGET_H
+#ifndef CONFIGURATION_WIDGET_H
+#define CONFIGURATION_WIDGET_H
 
-#include "checkable_spin_box_widget.h"
-#include "random_string_configuration.h"
+#include "checkable_spinbox_widget.hpp"
+#include "configuration.hpp"
 #include <QLabel>
 #include <QPointer>
 #include <QVBoxLayout>
@@ -15,21 +15,21 @@ class ConfigurationWidget : public QWidget {
 
 public:
   explicit ConfigurationWidget(QWidget *parent)
-      : QWidget(parent), password_lenght_widget(new QSpinBox(this)),
+      : QWidget(parent), lenght_widget(new QSpinBox(this)),
         character_configuration_widgets{nullptr, nullptr, nullptr, nullptr}
   {
     QPointer<QVBoxLayout> vbox_layout = new QVBoxLayout(this);
     setLayout(vbox_layout);
-
     vbox_layout->setContentsMargins(0, 0, 0, 0);
-    password_lenght_widget->setRange(0, max_password_lenght);
-    password_lenght_widget->setValue(inital_password_lenght);
-    vbox_layout->addWidget(password_lenght_widget);
+
+    lenght_widget->setRange(0, max_password_lenght);
+    lenght_widget->setValue(inital_password_lenght);
+    vbox_layout->addWidget(lenght_widget);
 
     QPointer<QLabel> password_lenght_label = new QLabel(tr("String lenght:"), this);
     vbox_layout->addWidget(password_lenght_label);
 
-    connect(password_lenght_widget, &QSpinBox::valueChanged, this,
+    connect(lenght_widget, &QSpinBox::valueChanged, this,
             &ConfigurationWidget::UpdatePasswordConfiguration);
 
     for (auto &character_configuration_widget : character_configuration_widgets) {
@@ -49,7 +49,7 @@ public:
 
     character_configuration_widgets[3]->SetText(tr("Minimum number of special characters"));
     character_configuration_widgets[3]->SetValue(initial_minimum_special_characters);
-    character_configuration_widgets[3]->SetCheckState(Qt::CheckState::Unchecked);
+    // character_configuration_widgets[3]->SetCheckState(Qt::CheckState::Unchecked);
 
     SetCharacterConfigurationWidgetsRanges(max_password_lenght);
 
@@ -59,10 +59,9 @@ public:
     }
   }
 
-  [[nodiscard]] RandomStringConfiguration GetRandomStringConfiguration() const
+  [[nodiscard]] StringConfiguration GetRandomStringConfiguration() const
   {
-    RandomStringConfiguration configuration(password_lenght_widget->value(),
-                                            GetCharacterConfigurations());
+    StringConfiguration configuration(lenght_widget->value(), GetCharacterConfigurations());
     return configuration;
   }
 
@@ -95,19 +94,19 @@ private slots:
 
     // prevent the password configuration from exceeding the string length
     while (ConfigurationExceedingSize() > 0) {
-      if (sender() == password_lenght_widget) {
+      if (sender() == lenght_widget) {
         if (GetCheckedValuesSum() < max_password_lenght) {
           const int configuration_sum = GetCheckedValuesSum();
-          password_lenght_widget->setValue(configuration_sum);
+          lenght_widget->setValue(configuration_sum);
         } else {
-          password_lenght_widget->setValue(max_password_lenght);
+          lenght_widget->setValue(max_password_lenght);
         }
       }
 
       for (auto &character_configuration_widget : character_configuration_widgets) {
         if (sender() == character_configuration_widget) {
           if (GetCheckedValuesSum() <= max_password_lenght) {
-            password_lenght_widget->setValue(GetCheckedValuesSum());
+            lenght_widget->setValue(GetCheckedValuesSum());
           } else {
             character_configuration_widget->SetValue(character_configuration_widget->Value() -
                                                      ConfigurationExceedingSize());
@@ -120,7 +119,7 @@ private slots:
 private: // NOLINT(readability-redundant-access-specifiers)
   [[nodiscard]] int ConfigurationExceedingSize() const
   {
-    const int password_lenght = password_lenght_widget->value();
+    const int password_lenght = lenght_widget->value();
     const int checked_values_sum = GetCheckedValuesSum();
     const int exceeding_size = checked_values_sum - password_lenght;
     return exceeding_size;
@@ -156,13 +155,13 @@ private: // NOLINT(readability-redundant-access-specifiers)
 
   static constexpr int max_password_lenght = 1024;
   static constexpr int inital_password_lenght = 32;
-  static constexpr int initial_minimum_number_uppercase_letters = 8;
-  static constexpr int initial_minimum_number_lowercase_letters = 8;
-  static constexpr int initial_minimum_number_digits = 8;
-  static constexpr int initial_minimum_special_characters = 8;
+  static constexpr int initial_minimum_number_uppercase_letters = 1;
+  static constexpr int initial_minimum_number_lowercase_letters = 1;
+  static constexpr int initial_minimum_number_digits = 1;
+  static constexpr int initial_minimum_special_characters = 1;
 
-  QPointer<QSpinBox> password_lenght_widget;
+  QPointer<QSpinBox> lenght_widget;
   std::array<QPointer<CheckableSpinBox>, 4> character_configuration_widgets;
 };
 
-#endif // RANDOM_STRING_CONFIGURATION_WIDGET_H
+#endif // CONFIGURATION_WIDGET_H

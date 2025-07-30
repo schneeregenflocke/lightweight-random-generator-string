@@ -10,7 +10,7 @@ include(CMakePrintHelpers)
 #set(${PROJECT_NAME}_VERSION_TWEAK)
 
 #project(SimpleRandomStringGenerator VERSION ${versionFile})
-project(SimpleRandomStringGenerator)
+project(lightweight-random-string-generator)
 
 #cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK PROJECT_VERSION)
 
@@ -57,12 +57,12 @@ cmake_print_variables(${PROJECT_NAME}_TARGET_CXX_STANDARD)
 target_sources(
     ${PROJECT_NAME} PRIVATE
     src/main.cpp
-    src/random_string_generator.h
-    src/random_string_configuration.h
-    src/main_window.h
-    src/checkable_spin_box_widget.h
-    src/random_string_configuration_widget.h
-    src/license_info_dialog.h
+    src/generator.hpp
+    src/configuration.hpp
+    src/main_window.hpp
+    src/checkable_spinbox_widget.hpp
+    src/configuration_widget.hpp
+    src/license_info_dialog.hpp
 )
 
 if(MSVC)
