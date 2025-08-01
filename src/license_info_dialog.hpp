@@ -37,7 +37,7 @@ public:
     vbox_layout->addWidget(license_text_edit);
 
     QPointer<QLabel> application_name_label =
-        new QLabel("lightweight-random-string-generator", this);
+        new QLabel("lightweight-random-generator-string", this);
     QPointer<QLabel> copyright_notice_label =
         new QLabel(QString::fromWCharArray(L"Copyright \xa9 2021 - 2025 Marco Peyer"));
     application_name_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -49,4 +49,4 @@ public:
 private:
 };
 
-#endif
+#endif // LICENSE_INFO_DIALOG_H

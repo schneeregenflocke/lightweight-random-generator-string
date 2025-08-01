@@ -2,104 +2,115 @@ cmake_minimum_required(VERSION 3.16)
 
 include(CMakePrintHelpers)
 
-#file(STRINGS "VERSION" versionFile)
-#string(REGEX MATCHALL "([0-9]+)" versionList ${versionFile})
-#list(GET versionList 0 ${PROJECT_NAME}_VERSION_MAJOR)
-#list(GET versionList 1 ${PROJECT_NAME}_VERSION_MINOR)
-#list(GET versionList 2 ${PROJECT_NAME}_VERSION_PATCH)
-#set(${PROJECT_NAME}_VERSION_TWEAK)
+# file(STRINGS "VERSION" versionFile) string(REGEX MATCHALL "([0-9]+)" versionList ${versionFile})
+# list(GET versionList 0 ${PROJECT_NAME}_VERSION_MAJOR) list(GET versionList 1
+# ${PROJECT_NAME}_VERSION_MINOR) list(GET versionList 2 ${PROJECT_NAME}_VERSION_PATCH)
+# set(${PROJECT_NAME}_VERSION_TWEAK)
 
-#project(SimpleRandomStringGenerator VERSION ${versionFile})
-project(lightweight-random-string-generator)
+# project(SimpleRandomStringGenerator VERSION ${versionFile})
+project(lightweight-random-generator-string)
 
-#cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK PROJECT_VERSION)
+# cmake_print_variables(versionFile versionList ${PROJECT_NAME}_VERSION_MAJOR
+# ${PROJECT_NAME}_VERSION_MINOR ${PROJECT_NAME}_VERSION_PATCH ${PROJECT_NAME}_VERSION_TWEAK
+# PROJECT_VERSION)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Generate compile_commands.json for clang tooling" FORCE)
-
-set(Qt6_ROOT "$ENV{Qt6_ROOT}" CACHE PATH "Path to your Qt installation prefix" FORCE)
-
-cmake_print_variables(
-    CMAKE_SYSTEM_NAME
-    CMAKE_SYSTEM_VERSION
-    CMAKE_C_COMPILER_ID
-    CMAKE_CXX_COMPILER_ID
-    CMAKE_GENERATOR
-    CMAKE_BUILD_TYPE
-    CMAKE_GENERATOR_TOOLSET
-    CMAKE_TOOLCHAIN_FILE
-    CMAKE_ROOT
-    CMAKE_COMMAND
-    CMAKE_EDIT_COMMAND
-    PROJECT_NAME
-    CMAKE_PROJECT_VERSION
-    CMAKE_CURRENT_SOURCE_DIR
-    CMAKE_CURRENT_BINARY_DIR
-    CMAKE_CFG_INTDIR
+set(CMAKE_EXPORT_COMPILE_COMMANDS
+    ON
+    CACHE BOOL "Generate compile_commands.json for clang tooling" FORCE
 )
 
-find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
+set(Qt6_ROOT
+    "$ENV{Qt6_ROOT}"
+    CACHE PATH "Path to your Qt installation prefix" FORCE
+)
+
+cmake_print_variables(
+  CMAKE_SYSTEM_NAME
+  CMAKE_SYSTEM_VERSION
+  CMAKE_C_COMPILER_ID
+  CMAKE_CXX_COMPILER_ID
+  CMAKE_GENERATOR
+  CMAKE_BUILD_TYPE
+  CMAKE_GENERATOR_TOOLSET
+  CMAKE_TOOLCHAIN_FILE
+  CMAKE_ROOT
+  CMAKE_COMMAND
+  CMAKE_EDIT_COMMAND
+  PROJECT_NAME
+  CMAKE_PROJECT_VERSION
+  CMAKE_CURRENT_SOURCE_DIR
+  CMAKE_CURRENT_BINARY_DIR
+  CMAKE_CFG_INTDIR
+)
+
+find_package(
+  Qt6
+  COMPONENTS Core Gui Widgets
+  REQUIRED
+)
 qt_standard_project_setup()
 
-cmake_print_variables(
-    Qt6_ROOT
-    Qt6_FOUND
-    Qt6_VERSION
-    WINDEPLOYQT_EXECUTABLE
-    CMAKE_PREFIX_PATH
-)
+cmake_print_variables(Qt6_ROOT Qt6_FOUND Qt6_VERSION WINDEPLOYQT_EXECUTABLE CMAKE_PREFIX_PATH)
 
 add_executable(${PROJECT_NAME})
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-get_target_property(${PROJECT_NAME}_TARGET_CXX_STANDARD ${PROJECT_NAME} CXX_STANDARD)
-cmake_print_variables(${PROJECT_NAME}_TARGET_CXX_STANDARD)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+cmake_print_properties(TARGETS ${PROJECT_NAME} PROPERTIES CXX_STANDARD)
 
 target_sources(
-    ${PROJECT_NAME} PRIVATE
-    src/main.cpp
-    src/generator.hpp
-    src/configuration.hpp
-    src/main_window.hpp
-    src/checkable_spinbox_widget.hpp
-    src/configuration_widget.hpp
-    src/license_info_dialog.hpp
+  ${PROJECT_NAME}
+  PRIVATE src/main.cpp
+          src/generator.hpp
+          src/configuration.hpp
+          src/main_window.hpp
+          src/checkable_spinbox_widget.hpp
+          src/configuration_widget.hpp
+          src/license_info_dialog.hpp
 )
 
 if(MSVC)
-    #set(QT_INSTALLATION_PREFIX CACHE PATH "Set your CMAKE_PREFIX_PATH environment variable to the Qt installation prefix (e.g. C:\\Qt\\6.0.0\\msvc2019_64)")
-    #list(APPEND CMAKE_PREFIX_PATH ${QT_INSTALLATION_PREFIX})
+  # set(QT_INSTALLATION_PREFIX CACHE PATH "Set your CMAKE_PREFIX_PATH environment variable to the Qt
+  # installation prefix (e.g. C:\\Qt\\6.0.0\\msvc2019_64)") list(APPEND CMAKE_PREFIX_PATH
+  # ${QT_INSTALLATION_PREFIX})
 
-    target_sources(
-        ${PROJECT_NAME} PRIVATE
-        ${CMAKE_SOURCE_DIR}/src/win32_rc/SimpleRandomStringGenerator.rc
-    )
+  target_sources(
+    ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src/win32_rc/SimpleRandomStringGenerator.rc
+  )
 
-    target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:windows /ENTRY:mainCRTStartup)
+  target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:windows /ENTRY:mainCRTStartup)
 
-    add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${Qt6_ROOT}/bin/qtenv2.bat
-        #COMMAND ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        #COMMAND ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
-        COMMAND ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
-        COMMAND ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1 --no-system-d3d-compiler --no-svg --compiler-runtime --dir ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
-    )
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${Qt6_ROOT}/bin/qtenv2.bat
+    # COMMAND ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose
+    # 1 --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR} COMMAND
+    # ${Qt6_ROOT}/bin/windeployqt.exe $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1
+    # --no-system-d3d-compiler --no-svg --compiler-runtime --dir
+    # ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+    COMMAND ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1
+            --no-system-d3d-compiler --no-svg ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}
+    COMMAND
+      ${WINDEPLOYQT_EXECUTABLE} $<IF:$<CONFIG:Debug>,"--debug","--release"> --verbose 1
+      --no-system-d3d-compiler --no-svg --compiler-runtime --dir
+      ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff $<TARGET_FILE:${PROJECT_NAME}>
+  )
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 
 qt_add_resources(
-    ${PROJECT_NAME}
-    "license_text"
-    PREFIX "/"
-    FILES LICENSE.txt images/SRSG_icon.svg
+  ${PROJECT_NAME}
+  "license_text"
+  PREFIX
+  "/"
+  FILES
+  LICENSE.txt
+  images/SRSG_icon.svg
 )
 
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME
-    DESTINATION ${PROJECT_NAME}
-    COMPONENT ${PROJECT_NAME}_component
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_NAME}
+                                        COMPONENT ${PROJECT_NAME}_component
 )
 
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
@@ -125,28 +136,28 @@ include(CPack REQUIRED)
 include(CPackIFW REQUIRED)
 
 cpack_add_component(
-    ${PROJECT_NAME}_component
-    DISPLAY_NAME ${PROJECT_NAME}
-    DESCRIPTION "Generates random strings with simple configuration options."
-    REQUIRED
+  ${PROJECT_NAME}_component
+  DISPLAY_NAME ${PROJECT_NAME}
+  DESCRIPTION "Generates random strings with simple configuration options."
+  REQUIRED
 )
 
 if(MSVC)
-    install(
-        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff/
-        DESTINATION ${PROJECT_NAME}
-        COMPONENT ${PROJECT_NAME}_component
-    )
+  install(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/windeployqt_stuff/
+    DESTINATION ${PROJECT_NAME}
+    COMPONENT ${PROJECT_NAME}_component
+  )
 
-    cpack_ifw_configure_component(
-        ${PROJECT_NAME}_component
-        #NAME ${PROJECT_NAME}_component
-        VERSION ${PROJECT_VERSION}
-        LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
-        SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/installer/component.qs"
-    )
+  cpack_ifw_configure_component(
+    ${PROJECT_NAME}_component
+    # NAME ${PROJECT_NAME}_component
+    VERSION ${PROJECT_VERSION}
+    LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+    SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/installer/component.qs"
+  )
 endif()
 
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
-#list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified" "headers")
+# list(REMOVE_ITEM CPACK_COMPONENTS_ALL "Unspecified" "headers")
 cmake_print_variables(CPACK_COMPONENTS_ALL)
